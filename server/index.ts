@@ -47,19 +47,24 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // setting up the vite config in development mode :]
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // Serving the notification app on 127.0.0.1:5000
-  //named as notification-service 
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
   const port = 5000;
-  const host = "127.0.0.1";
-
-  server.listen(port, host, () => {
-    log(`serving on http://${host}:${port}`);
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
+    log(`serving on port ${port}`);
   });
 })();
