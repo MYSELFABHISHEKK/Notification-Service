@@ -15,7 +15,7 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    // Set up auto-refresh every 30 seconds
+    // Set up auto-refresh every 30 seconds.
     const intervalId = setInterval(() => {
       refetch();
     }, 30000);
