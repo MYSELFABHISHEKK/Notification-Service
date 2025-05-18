@@ -6,13 +6,13 @@ import { sendNotificationSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // API route prefix
+  // prefix = API route 
   const apiRoute = "/api";
 
-  // Create notification endpoint
+  // create notification endpoint  form one to another point 
   app.post(`${apiRoute}/notifications`, async (req: Request, res: Response) => {
     try {
-      // Validate request body
+      // validate request body
       const result = sendNotificationSchema.safeParse(req.body);
       
       if (!result.success) {
@@ -23,10 +23,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Create and process notification
+      // create and process notification
       const notification = await notificationService.sendNotification(result.data);
       
-      // Return created notification
+      // return created notification
       return res.status(201).json({
         id: notification.id,
         userId: notification.userId,
@@ -41,13 +41,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user notifications endpoint
+  // get user notifications endpoint
   app.get(`${apiRoute}/users/:userId/notifications`, async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
       const { limit, offset, status, type } = req.query;
       
-      // Parse query parameters
+      // parse query parameters
       const options = {
         limit: limit ? parseInt(limit as string) : undefined,
         offset: offset ? parseInt(offset as string) : undefined,
@@ -55,10 +55,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         type: type as string | undefined
       };
       
-      // Get notifications for user
+      // get notifications for user
       const result = await storage.getUserNotifications(userId, options);
       
-      // Return notifications
+      // return notifications
       return res.status(200).json({
         notifications: result.notifications,
         total: result.total,
@@ -71,13 +71,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get notification stats endpoint
+  // get notification stats endpoint
   app.get(`${apiRoute}/notifications/stats`, async (_req: Request, res: Response) => {
     try {
-      // Get notification statistics
+      // get notification statistics
       const stats = await storage.getStats();
       
-      // Return statistics
+      // return statistics
       return res.status(200).json(stats);
     } catch (error: any) {
       console.error("Error fetching notification stats:", error);
@@ -85,26 +85,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Retry a failed notification
+  // retry a failed notification
   app.post(`${apiRoute}/notifications/:id/retry`, async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       
-      // Get notification
+      // get notification
       const notification = await storage.getNotification(id);
       if (!notification) {
         return res.status(404).json({ message: "Notification not found" });
       }
       
-      // Check if notification is failed
+      // check if notification is failed
       if (notification.status !== "failed") {
         return res.status(400).json({ message: "Only failed notifications can be retried" });
       }
       
-      // Update status to pending
+      // update status to pending
       await storage.updateNotificationStatus(id, "pending");
       
-      // Process notification
+      // process notification
       const updated = await storage.getNotification(id);
       if (updated) {
         notificationService.sendNotification({
