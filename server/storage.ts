@@ -2,7 +2,7 @@ import { Notification, NotificationStatus, type User, type InsertUser } from "@s
 
 // Storage interface with CRUD methods
 export interface IStorage {
-  // User methods
+  // User methods for pre storage of the users 
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
