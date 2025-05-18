@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-
+//exporting the function
 export default function NotFound() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-neutral-100">
