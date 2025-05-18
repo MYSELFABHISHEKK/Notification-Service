@@ -5,7 +5,7 @@ export interface ApiResponse<T> {
   data: T;
   status: number;
 }
-
+// export interface notification response
 export interface NotificationResponse {
   id: number;
   userId: string;
